@@ -52,6 +52,31 @@
       height: 100%;
       width: 100%;
     }
+
+    .control:first-child {
+      width: 100%;
+    }
+
+    .gutter {
+      height: calc(100vh - 3.25rem);
+    }
+    .gutter:hover {
+      cursor: col-resize;
+    }
+    .is-flex-column .gutter {
+      height: 10px;
+      width: 100vw;
+    }
+    .is-flex-column .gutter {
+      cursor: row-resize;
+    }
+
+    #conflux-share-src {
+      border: 0;
+    }
+    #conflux-share {
+      line-height: 1em;
+    }
   </style>
 </head>
 
@@ -62,11 +87,11 @@
       <h2 class="is-inline-block is-size-7">streaming together</h2>
 
       <a class="button has-text-primary is-text is-small is-pulled-right is-padded" id="conflux-share-src">Share</a>
-      <a class="has-text-primary is-small is-pulled-right is-padded" id="conflux-share"></a>
+      <a class="has-text-primary is-small is-size-7 is-pulled-right is-padded" id="conflux-share"></a>
     </div>
 
     <div class="hero-body is-paddingless is-flex" id="split">
-      <section class="hero is-primary is-fullheight-with-navbar is-paddingless conflux-pane" id="one">
+      <section class="hero is-dark is-fullheight-with-navbar is-paddingless conflux-pane" id="one">
 
         <div class="hero-head is-padded">
           <form class="field has-addons conflux-pane-src">
@@ -85,7 +110,7 @@
 
       </section>
 
-      <section class="hero is-link is-fullheight-with-navbar is-paddingless conflux-pane" id="two">
+      <section class="hero is-dark is-fullheight-with-navbar is-paddingless conflux-pane" id="two">
 
         <div class="hero-head is-padded">
           <form class="field has-addons conflux-pane-src">
@@ -104,7 +129,9 @@
       </section>
 
     </div>
-    <div class="hero-foot">FOOT</div>
+    <div class="hero-foot has-text-right">
+      <a href="https://github.com/katie7r/conflux" class="has-text-primary is-padded is-paddingless-vertically" target="_blank" rel="noopener noreferrer">❤</a>
+    </div>
   </section>
 
   <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
