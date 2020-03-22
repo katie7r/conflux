@@ -34,31 +34,72 @@
       flex-basis: auto;
     }
 
+    .is-padded {
+      padding: 0.5rem;
+    }
+
     .is-paddingless-vertically {
       padding-bottom: 0;
       padding-top: 0;
     }
 
-    #one { padding-right: 0; }
-    #two { padding-left: 0; }
+    h1 {
+      margin-left: 0.5rem;
+    }
+
+    iframe {
+      flex-grow: 1;
+      height: 100%;
+      width: 100%;
+    }
   </style>
 </head>
 
 <body>
   <section class="hero is-dark is-fullheight">
-    <div class="hero-head">HEAD</div>
+    <div class="hero-head">
+      <h1 class="is-inline-block is-size-5 has-text-weight-bold">conflux</h1>
+      <h2 class="is-inline-block is-size-7">streaming together</h2>
+
+      <a class="button has-text-primary is-text is-small is-pulled-right is-padded" id="conflux-share-src">Share</a>
+      <a class="has-text-primary is-small is-pulled-right is-padded" id="conflux-share"></a>
+    </div>
+
     <div class="hero-body is-paddingless is-flex" id="split">
-      <section class="hero is-primary is-fullheight-with-navbar is-paddingless" id="one">
-        <div class="hero-head">head one</div>
-        <div class="hero-body">
-          ONE
+      <section class="hero is-primary is-fullheight-with-navbar is-paddingless conflux-pane" id="one">
+
+        <div class="hero-head is-padded">
+          <form class="field has-addons conflux-pane-src">
+            <div class="control">
+              <input class="input is-small" type="text" placeholder="URL">
+            </div>
+            <div class="control">
+              <button class="button is-small is-info">Load</a>
+            </div>
+          </form>
         </div>
+
+        <div class="hero-body is-paddingless is-flex is-flex-column">
+          <iframe height="100%" width="100%" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen src=""></iframe>
+        </div>
+
       </section>
 
-      <section class="hero is-link is-fullheight-with-navbar is-paddingless" id="two">
-        <div class="hero-head">head two</div>
-        <div class="hero-body">
-          TWO
+      <section class="hero is-link is-fullheight-with-navbar is-paddingless conflux-pane" id="two">
+
+        <div class="hero-head is-padded">
+          <form class="field has-addons conflux-pane-src">
+            <div class="control">
+              <input class="input is-small " type="text" placeholder="URL">
+            </div>
+            <div class="control">
+              <button class="button is-small is-info">Load</a>
+            </div>
+          </form>
+        </div>
+
+        <div class="hero-body is-paddingless is-flex is-flex-column">
+          <iframe frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen src=""></iframe>
         </div>
       </section>
 
@@ -68,9 +109,32 @@
 
   <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
   <script>
-    console.log(window.screen.orientation);
-    console.log(window.innerHeight);
-    console.log(window.innerWidth);
+    console.log('Oh, hey... there\'s nothing to see here.');
+
+    // - LOAD FROM URL PARAMS - //
+
+    if (window.location.search) {
+      var url = new URL(window.location.href);
+      var oneValue = url.searchParams.get('one');
+      var twoValue = url.searchParams.get('two');
+      var oneInput = document.getElementById('one').getElementsByTagName('input')[0];
+      var twoInput = document.getElementById('two').getElementsByTagName('input')[0];
+
+      oneInput.value = oneValue;
+      twoInput.value = twoValue;
+
+      // if (oneValue) {
+      //   oneInput.value = oneValue;
+      //   oneInput.closest('form').submit();
+      // }
+
+      // if (twoValue) {
+      //   twoInput.value = twoValue;
+      //   twoInput.closest('form').submit();
+      // }
+    }
+
+    // ---- SPLIT.JS PANES ---- //
 
     function checkIsLandscape() {
       return (
@@ -81,8 +145,6 @@
     }
 
     function initSplit(sizes) {
-      console.log('--- init ---', sizes);
-
       var horizontal = checkIsLandscape();
       var splitDirection = horizontal ? 'horizontal' : 'vertical';
       var splitCursor = horizontal ? 'col-resize' : 'row-resize';
@@ -112,6 +174,42 @@
         isLandscape = checkIsLandscape();
       }
     }, false);
+
+    // -- IFRAME PANE EMBEDS -- //
+
+    function loadPane(e) {
+      e.preventDefault();
+      e.stopPropagation();
+
+      console.log('load pane --', e);
+      var pane = e.target.closest('.conflux-pane');
+      var head = pane.getElementsByClassName('hero-head')[0];
+      var input = pane.getElementsByTagName('input')[0];
+      var frame = pane.getElementsByTagName('iframe')[0];
+
+      frame.src = input.value;
+      head.classList.add('is-hidden');
+    }
+
+    var srcs = document.getElementsByClassName('conflux-pane-src');
+    for (var i = 0; i < srcs.length; i++) {
+      srcs[i].addEventListener('submit', loadPane, false);
+    }
+
+    // ------ SHARE LINK ------ //
+
+    function shareLink(e) {
+      var link = document.getElementById('conflux-share');
+      var one = document.getElementById('one').getElementsByTagName('input')[0].value;
+      var two = document.getElementById('two').getElementsByTagName('input')[0].value;
+      var url = `${window.location.href.split('?')[0]}?one=${one}&two=${two}`
+
+      link.href = url;
+      link.innerHTML = url;
+    }
+
+    var shareSrc = document.getElementById('conflux-share-src');
+    shareSrc.addEventListener('click', shareLink, false);
   </script>
 </body>
 
