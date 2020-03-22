@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>conflux | streaming together</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.8.0/css/bulma.min.css">
+
+  <style>
+    /* Yes, this is where I always put my styles... just kidding.
+
+    I did want to make this whole thing while only creating one file, though,
+    so this is where my styles live now.
+
+    Hey, at least they aren't inline. ¯\_(ツ)_/¯ */
+
+    body {
+        -ms-overflow-style: none;  /* Internet Explorer 10+ */
+        scrollbar-width: none;  /* Firefox */
+    }
+    body::-webkit-scrollbar {
+        display: none;  /* Safari and Chrome */
+    }
+
+    .is-flex-column {
+      flex-direction: column;
+    }
+    .is-flex-column > .is-fullheight-with-navbar {
+      min-height: auto;
+      width: 100%;
+      flex-grow: 1;
+      flex-shrink: 1;
+      flex-basis: auto;
+    }
+
+    .is-paddingless-vertically {
+      padding-bottom: 0;
+      padding-top: 0;
+    }
+
+    #one { padding-right: 0; }
+    #two { padding-left: 0; }
+  </style>
+</head>
+
+<body>
+  <section class="hero is-dark is-fullheight">
+    <div class="hero-head">HEAD</div>
+    <div class="hero-body is-paddingless is-flex" id="split">
+      <section class="hero is-primary is-fullheight-with-navbar is-paddingless" id="one">
+        <div class="hero-head">head one</div>
+        <div class="hero-body">
+          ONE
+        </div>
+      </section>
+
+      <section class="hero is-link is-fullheight-with-navbar is-paddingless" id="two">
+        <div class="hero-head">head two</div>
+        <div class="hero-body">
+          TWO
+        </div>
+      </section>
+
+    </div>
+    <div class="hero-foot">FOOT</div>
+  </section>
+
+  <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+  <script>
+    console.log(window.screen.orientation);
+    console.log(window.innerHeight);
+    console.log(window.innerWidth);
+
+    function checkIsLandscape() {
+      return (
+        (window.screen.orientation === 'landscape-primary') ||
+        (window.screen.orientation === 'landscape-secondary') ||
+        (window.innerWidth >= window.innerHeight)
+      );
+    }
+
+    function initSplit(sizes) {
+      console.log('--- init ---', sizes);
+
+      var horizontal = checkIsLandscape();
+      var splitDirection = horizontal ? 'horizontal' : 'vertical';
+      var splitCursor = horizontal ? 'col-resize' : 'row-resize';
+
+      horizontal ? el.classList.remove('is-flex-column') : el.classList.add('is-flex-column');
+
+      return Split(['#one', '#two'], {
+        sizes: sizes,
+        gutterAlign: 'center',
+        direction: splitDirection,
+        cursor: splitCursor,
+      });
+    }
+
+    var el = document.getElementById('split');
+    var isLandscape = checkIsLandscape();
+    var splitstance = initSplit([50, 50]);
+
+    window.addEventListener("resize", function () {
+      if (isLandscape != checkIsLandscape()) {
+        // maintain current pane proportions
+        var sizes = splitstance.getSizes();
+        // reinit Split
+        splitstance.destroy();
+        splitstance = initSplit(sizes);
+        // update orientation check
+        isLandscape = checkIsLandscape();
+      }
+    }, false);
+  </script>
+</body>
+
+</html>
